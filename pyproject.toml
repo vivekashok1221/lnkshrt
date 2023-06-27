@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "lnkshrt"
+version = "0.1.0"
+description = "URL shortening service."
+authors = ["vivekashok1221 <vivekashok1221@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.*"
+fastapi = {extras = ["all"], version = "^0.98.0"}
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+taskipy = "^1.11.0"
+black = "^23.3.0"
+pyright = "^1.1.316"
+
+
+[tool.taskipy.tasks]
+precommit = { cmd = "pre-commit install", help="Installs pre-commit hooks."}
+lint = { cmd = "pre-commit run --all-files", help = "Lints project." }
+format = { cmd = "black .", help = "Runs Black autoformatter." }
+start = { cmd = "uvicorn --reload src.backend.app:app", help = "Runs the backend server." }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
