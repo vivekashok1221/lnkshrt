@@ -50,3 +50,16 @@ class TokenResponse(BaseModel):
         """Extra schema information for the model."""
 
         schema_extra = {"example": {"access_token": "<token>", "token_type": "bearer"}}
+
+
+class LinkCreate(BaseModel):
+    """Request model for creating a link."""
+
+    url: str
+    custom_url: str | None = None
+
+
+class LinkResponse(BaseModel):
+    """Response model for link creation."""
+
+    shortened_url: str

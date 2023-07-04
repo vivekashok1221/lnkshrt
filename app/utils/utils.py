@@ -1,3 +1,4 @@
+import urllib.parse
 import uuid
 from typing import Annotated
 
@@ -8,8 +9,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connections import get_db
-from app.db.models import Token, User
+from app.db.models import Link, Token, User
 
+ALLOWED_SCHEMES = ["http", "https"]
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -52,3 +54,29 @@ async def authorize_user(
             status_code=401, detail="Invalid API key", headers={"WWW-Authenticate": "Bearer"}
         )
     return token.user_id
+
+
+async def retrieve_url(
+    short_url: str, db_session: Annotated[AsyncSession, Depends(get_db)]
+) -> str | None:
+    """Retrieves the original URL associated with the given short URL."""
+    stmt = select(Link).where(Link.short_url == short_url)
+    async with db_session.begin():
+        link = await db_session.execute(stmt)
+    return link.scalar_one_or_none()
+
+
+def validate_url_scheme(url: str) -> str:
+    """Validates the URL scheme and returns the modified URL with a valid scheme."""
+    url_parts = list(urllib.parse.urlsplit(url))
+    scheme = url_parts[0]
+    if scheme not in ALLOWED_SCHEMES:
+        if scheme == "":
+            url_parts[0] = "https"
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid URL scheme. Only 'http' and 'https' are allowed.",
+            )
+
+    return urllib.parse.urlunsplit(url_parts)
