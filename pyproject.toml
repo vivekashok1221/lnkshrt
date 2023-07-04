@@ -9,6 +9,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.*"
 fastapi = {extras = ["all"], version = "^0.98.0"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.17"}
+asyncpg = "^0.27.0"
+loguru = "^0.7.0"
+alembic = "^1.11.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -17,6 +21,12 @@ taskipy = "^1.11.0"
 black = "^23.3.0"
 pyright = "^1.1.316"
 
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.black]
+line-length = 100
 
 [tool.taskipy.tasks]
 precommit = { cmd = "pre-commit install", help="Installs pre-commit hooks."}
