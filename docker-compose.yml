@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpw
+      POSTGRES_DB: lnkshrtdb
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d lnkshrtdb" ]
+      interval: 2s
+      timeout: 1s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://admin:adminpw@postgres:5432/lnkshrtdb
+    volumes:
+      - .:/API
+
+volumes:
+  postgres_data:
