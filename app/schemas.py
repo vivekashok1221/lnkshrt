@@ -63,3 +63,14 @@ class LinkResponse(BaseModel):
     """Response model for link creation."""
 
     shortened_url: str
+
+
+class LinkDeleteResponse(BaseModel):
+    """Response model for link deletion."""
+
+    message: str
+
+    class Config:
+        """Extra schema information for the model."""
+
+        schema_extra = {"example": {"message": "Link deleted successfully"}}
