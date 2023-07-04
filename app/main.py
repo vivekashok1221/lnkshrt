@@ -2,11 +2,12 @@ from typing import Literal
 
 from fastapi import FastAPI
 
-from app.routers import user
+from app.routers import link, user
 
 app = FastAPI()
 
 app.include_router(user.router)
+app.include_router(link.router)
 
 
 @app.get("/ping")
