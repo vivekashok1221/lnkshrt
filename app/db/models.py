@@ -17,12 +17,8 @@ class User(Base):
     password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
-    links: Mapped[list["Link"]] = relationship(
-        back_populates="user", cascade="all, delete"
-    )
-    tokens: Mapped[list["Token"]] = relationship(
-        back_populates="user", cascade="all, delete"
-    )
+    links: Mapped[list["Link"]] = relationship(back_populates="user", cascade="all, delete")
+    tokens: Mapped[list["Token"]] = relationship(back_populates="user", cascade="all, delete")
 
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, email={self.email})>"
