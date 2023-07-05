@@ -58,7 +58,7 @@ async def authorize_user(
 
 async def retrieve_url(
     short_url: str, db_session: Annotated[AsyncSession, Depends(get_db)]
-) -> str | None:
+) -> Link | None:
     """Retrieves the original URL associated with the given short URL."""
     stmt = select(Link).where(Link.short_url == short_url)
     async with db_session.begin():

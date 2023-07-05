@@ -10,7 +10,7 @@ from starlette.responses import RedirectResponse
 
 from app.db.connections import get_db
 from app.db.models import Link
-from app.schemas import LinkCreate, LinkResponse
+from app.schemas import LinkCreate, LinkDeleteResponse, LinkResponse
 from app.utils.utils import authorize_user, retrieve_url, validate_url_scheme
 
 router = APIRouter()
@@ -51,10 +51,29 @@ async def create_link(
 
 
 @router.get("/{short_url}")
-async def redirect_url(link: Annotated[str, Depends(retrieve_url)]) -> RedirectResponse:
+async def redirect_url(link: Annotated[Link, Depends(retrieve_url)]) -> RedirectResponse:
     """Redirects to the original URL associated with the given short URL."""
     if link is None:
         raise HTTPException(status_code=404, detail="URL not found")
 
     # Perform the redirection
     return RedirectResponse(url=link.original_url)
+
+
+@router.delete("/links/{short_url}")
+async def delete_link(
+    user_id: Annotated[UUID, Depends(authorize_user)],
+    link: Annotated[Link, Depends(retrieve_url)],
+    db_session: Annotated[AsyncSession, Depends(get_db)],
+) -> LinkDeleteResponse:
+    """Endpoint for deleting shortened url."""
+    if link is None:
+        raise HTTPException(status_code=404, detail="URL not found")
+
+    if user_id != link.user_id:
+        raise HTTPException(status_code=403, detail="You are not authorized to delete this link")
+
+    async with db_session.begin():
+        await db_session.delete(link)
+
+    return LinkDeleteResponse(message="Link deleted successfully")
