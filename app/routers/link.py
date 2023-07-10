@@ -16,7 +16,7 @@ from app.utils.utils import authorize_user, retrieve_url, validate_url_scheme
 router = APIRouter()
 
 
-@router.post("/links/")
+@router.post("/links")
 async def create_link(
     url: LinkCreate,
     user_id: Annotated[UUID, Depends(authorize_user)],
