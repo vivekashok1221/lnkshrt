@@ -60,6 +60,7 @@ async def retrieve_url(
     short_url: str, db_session: Annotated[AsyncSession, Depends(get_db)]
 ) -> Link | None:
     """Retrieves the original URL associated with the given short URL."""
+    short_url = urllib.parse.quote_plus(short_url)
     stmt = select(Link).where(Link.short_url == short_url)
     async with db_session.begin():
         link = await db_session.execute(stmt)
