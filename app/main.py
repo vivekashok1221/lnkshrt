@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from app.routers import link, user
 
-app = FastAPI()
+app = FastAPI(title="lnkshrt- Shorten links.")
 
 app.include_router(user.router)
 app.include_router(link.router)
