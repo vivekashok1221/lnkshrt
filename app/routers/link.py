@@ -26,15 +26,15 @@ async def create_link(
 
     **Note**:
     The 'shortened_url' field in the response represents just the 'short' part of the URL,
-    without the domain part. It follows the pattern 'domain.com/{short}', where '{short}'
-    is a unique identifier for the created link. It is up to the frontend client to construct
-    the full url.
+    without the domain part. It follows the pattern 'domain.com/{shortened_url}', where
+    '{shortened_Url}' is a unique identifier for the created link. It is up to the frontend
+     client to construct the full URL.
     """
     original_url = url.url
-    custom_url = url.custom_url
+    custom_path = url.custom_path
     # Normalizing url.
-    if custom_url:
-        short_url = urllib.parse.quote_plus(custom_url)
+    if custom_path:
+        short_url = urllib.parse.quote_plus(custom_path)
     else:
         short_url = token_urlsafe(4)
 
@@ -66,7 +66,7 @@ async def delete_link(
     link: Annotated[Link, Depends(retrieve_url)],
     db_session: Annotated[AsyncSession, Depends(get_db)],
 ) -> LinkDeleteResponse:
-    """Endpoint for deleting shortened url."""
+    """Endpoint for deleting shortened URL."""
     if link is None:
         raise HTTPException(status_code=404, detail="URL not found")
 
