@@ -56,7 +56,7 @@ class LinkCreate(BaseModel):
     """Request model for creating a link."""
 
     url: str
-    custom_url: str | None = None
+    custom_path: str | None = None
 
 
 class LinkResponse(BaseModel):
