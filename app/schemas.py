@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, validator
 
@@ -74,3 +75,22 @@ class LinkDeleteResponse(BaseModel):
         """Extra schema information for the model."""
 
         schema_extra = {"example": {"message": "Link deleted successfully"}}
+
+
+class PingResponse(BaseModel):
+    """Response model for ping endpoint."""
+
+    message: str
+    timestamp: datetime
+    version: str
+
+    class Config:
+        """Extra schema information for the model."""
+
+        schema_extra = {
+            "example": {
+                "message": "Pong!",
+                "timestamp": "2023-07-12T23:14:46.380726",
+                "version": "1.0.0",
+            }
+        }
