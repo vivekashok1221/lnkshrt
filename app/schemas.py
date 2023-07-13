@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 USERNAME_RE = re.compile("^[A-Za-z0-9_-]*$")
 
@@ -13,7 +13,8 @@ class UserCreate(BaseModel):
     password: str
     email: EmailStr
 
-    @validator("username")
+    @classmethod
+    @field_validator("username")
     def _validate_username(cls, username: str) -> str:
         """Checks if username only contains alphanumeric characters, - and _."""
         if not USERNAME_RE.match(username):
@@ -22,7 +23,8 @@ class UserCreate(BaseModel):
             )
         return username
 
-    @validator("password")
+    @classmethod
+    @field_validator("password")
     def _validate_password(cls, password: str) -> str:
         """Checks if password is longer than 6 characters."""
         if len(password) < 6:
@@ -34,11 +36,9 @@ class SignupResponse(BaseModel):
     """Response model for user signup."""
 
     message: str
-
-    class Config:
-        """Extra schema information for the model."""
-
-        schema_extra = {"example": {"message": "User registered successfully"}}
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"message": "User registered successfully"}}
+    )
 
 
 class TokenResponse(BaseModel):
@@ -46,11 +46,9 @@ class TokenResponse(BaseModel):
 
     access_token: str
     token_type: str
-
-    class Config:
-        """Extra schema information for the model."""
-
-        schema_extra = {"example": {"access_token": "<token>", "token_type": "bearer"}}
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"access_token": "<token>", "token_type": "bearer"}}
+    )
 
 
 class LinkCreate(BaseModel):
@@ -70,11 +68,9 @@ class LinkDeleteResponse(BaseModel):
     """Response model for link deletion."""
 
     message: str
-
-    class Config:
-        """Extra schema information for the model."""
-
-        schema_extra = {"example": {"message": "Link deleted successfully"}}
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"message": "Link deleted successfully"}}
+    )
 
 
 class PingResponse(BaseModel):
@@ -83,14 +79,12 @@ class PingResponse(BaseModel):
     message: str
     timestamp: datetime
     version: str
-
-    class Config:
-        """Extra schema information for the model."""
-
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "message": "Pong!",
                 "timestamp": "2023-07-12T23:14:46.380726",
                 "version": "1.0.0",
             }
         }
+    )
