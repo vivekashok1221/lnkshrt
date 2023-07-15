@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "lnkshrt"
 version = "0.1.0"
-description = "URL shortening service."
+description = "URL shortener API built with FastAPI."
 authors = ["vivekashok1221 <vivekashok1221@gmail.com>"]
 license = "MIT"
 readme = "README.md"
