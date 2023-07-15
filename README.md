@@ -1,3 +1,9 @@
+![GitHub release](https://img.shields.io/github/v/release/vivekashok1221/lnkshrt?label=latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![API documentation](https://img.shields.io/badge/API-documentation-green)](https://l.vivekashok.me)
+
+
 # lnkshrt
 
 lnkshrt is a URL shortener API built with FastAPI. It allows you to generate shortened URLs which redirect you to the original URLs.
