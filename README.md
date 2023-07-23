@@ -1,14 +1,14 @@
 ![GitHub release](https://img.shields.io/github/v/release/vivekashok1221/lnkshrt?label=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-[![API documentation](https://img.shields.io/badge/API-documentation-green)](https://l.vivekashok.me)
+[![API documentation](https://img.shields.io/badge/API-documentation-green)](https://lnkshrt.xyz)
 
 
 # lnkshrt
 
 lnkshrt is a URL shortener API built with FastAPI. It allows you to generate shortened URLs which redirect you to the original URLs.
 
-The official instance of lnkshrt is hosted at [l.vivekashok.me](https://l.vivekashok.me). However, if you prefer, you can also run your own instance by following the steps in the ["Getting Started"](#getting-started) section.
+The official instance of lnkshrt is hosted at [lnkshrt.xyz](https://lnkshrt.xyz). However, if you prefer, you can also run your own instance by following the steps in the ["Getting Started"](#getting-started) section.
 
 The lnkshrt API is built using FastAPI, PostgreSQL, and SQLAlchemy.
 
@@ -45,7 +45,7 @@ To run the lnkshrt API yourself:-
 
 ## API Documentation
 
-You can access the API documentation online at [l.vivekashok.me](https://l.vivekashok.me) (or locally at http://0.0.0.0:8000/docs provided the server is running).
+You can access the API documentation online at [lnkshrt.xyz](https://lnkshrt.xyz) (or locally at http://0.0.0.0:8000/docs provided the server is running).
 
 
 ## Development
