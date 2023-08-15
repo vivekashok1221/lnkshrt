@@ -1,4 +1,4 @@
-name: CI / CD
+name: Continuous Deployment
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-push:
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
@@ -15,3 +16,9 @@ jobs:
     with:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build-and-push
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
