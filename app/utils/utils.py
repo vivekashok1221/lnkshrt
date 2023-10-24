@@ -15,14 +15,14 @@ ALLOWED_SCHEMES = ["http", "https"]
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def hash_password(password: str) -> str:
+def hash_string(plaintext: str) -> str:
     """Returns hash of the password."""
-    return argon2.using(rounds=4).hash(password)
+    return argon2.using(rounds=4).hash(plaintext)
 
 
-def check_password(password: str, hash_: str) -> bool:
+def verify_hash(plaintext: str, hash_: str) -> bool:
     """Compares salted-hash against hash of user-inputted password."""
-    return argon2.verify(password, hash_)
+    return argon2.verify(plaintext, hash_)
 
 
 def generate_token() -> str:
@@ -35,7 +35,7 @@ async def authenticate_user(username: str, password: str, db_session: AsyncSessi
     async with db_session.begin():
         user = await db_session.execute(select(User).where(User.username == username))
     user = user.scalar_one_or_none()
-    if user and check_password(password, user.password):
+    if user and verify_hash(password, user.password):
         return user
     return None
 
