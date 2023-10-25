@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.connections import get_db
 from app.db.models import Token, User
 from app.schemas import SignupResponse, TokenResponse, UserCreate
-from app.utils.utils import authenticate_user, generate_token, hash_password
+from app.utils.utils import authenticate_user, generate_token, hash_string
 
 router = APIRouter()
 
@@ -24,7 +24,7 @@ async def signup(
     email = user.email
     try:
         async with db_session.begin():
-            db_session.add(User(username=username, email=email, password=hash_password(password)))
+            db_session.add(User(username=username, email=email, password=hash_string(password)))
     except IntegrityError:
         raise HTTPException(status_code=409, detail="The username or email is already in use.")
     logger.info(f"Created account for {username}.")
@@ -45,8 +45,9 @@ async def create_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    token = generate_token()
+    token = generate_token(user.id)
+
     async with db_session.begin():
-        db_session.add(Token(user_id=user.id, token=token))
+        db_session.add(Token(user_id=user.id, token=hash_string(token)))
 
     return TokenResponse(access_token=token, token_type="bearer")
