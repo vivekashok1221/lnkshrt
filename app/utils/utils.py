@@ -1,5 +1,7 @@
+import base64
 import urllib.parse
 import uuid
+from secrets import token_urlsafe
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
@@ -25,9 +27,11 @@ def verify_hash(plaintext: str, hash_: str) -> bool:
     return argon2.verify(plaintext, hash_)
 
 
-def generate_token() -> str:
+def generate_token(user_id: uuid.UUID) -> str:
     """Generate a UUID-based token without dashes."""
-    return str(uuid.uuid4()).replace("-", "")
+    encoded_user_id = base64.b64encode(user_id.bytes).decode("utf-8")
+    payload = token_urlsafe(32)
+    return f"{encoded_user_id}{payload}"
 
 
 async def authenticate_user(username: str, password: str, db_session: AsyncSession) -> User | None:
@@ -45,15 +49,24 @@ async def authorize_user(
     db_session: Annotated[AsyncSession, Depends(get_db)],
 ) -> uuid.UUID:
     """Authorize a user based on the provided API key."""
-    async with db_session.begin():
-        stmt = select(Token).where(Token.token == token)
-        token = await db_session.execute(stmt)
-    token = token.scalar_one_or_none()
-    if token is None:
+    try:
+        # The first 24 characters of the token represent the user ID in base 64 format.
+        # It is decoded into bytes and then converted into a UUID object.
+        user_id = uuid.UUID(bytes=base64.b64decode(token[:24]))
+    except ValueError:
+        # The decoded user_id is not a valid UUID.
         raise HTTPException(
             status_code=401, detail="Invalid API key", headers={"WWW-Authenticate": "Bearer"}
         )
-    return token.user_id
+    async with db_session.begin():
+        stmt = select(Token).where(Token.user_id == user_id)
+        token_hashes = await db_session.execute(stmt)
+    for token_hash in token_hashes.scalars().all():
+        if verify_hash(token, token_hash.token):
+            return token_hash.user_id
+    raise HTTPException(
+        status_code=401, detail="Invalid API key", headers={"WWW-Authenticate": "Bearer"}
+    )
 
 
 async def retrieve_url(
